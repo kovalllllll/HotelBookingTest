@@ -1,5 +1,6 @@
 ﻿using HotelBooking.Application.Models.Rooms;
-using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.Persistence;
+using HotelBooking.Application.Interfaces.Services;
 using HotelBooking.Domain.Entities;
 
 namespace HotelBooking.Application.Services;

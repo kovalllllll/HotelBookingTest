@@ -1,6 +1,7 @@
 ﻿using HotelBooking.Application.Models.Bookings;
 using HotelBooking.Application.Models.Statistics;
-using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.Persistence;
+using HotelBooking.Application.Interfaces.Services;
 using HotelBooking.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

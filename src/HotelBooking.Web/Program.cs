@@ -1,19 +1,10 @@
 using HotelBooking.Infrastructure;
-using HotelBooking.Infrastructure.Persistence;
-using HotelBooking.Web.Middleware;
+using HotelBooking.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
-builder.Services.AddControllers();
-
-builder.Services.AddRazorPages();
+builder.Services.AddWebServices();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -47,14 +38,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
 
-try
-{
-    await SeedData.InitializeAsync(app.Services);
-}
-catch (Exception ex)
-{
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "Помилка при ініціалізації бази даних.");
-}
+await app.Services.InitializeDatabaseAsync();
 
 app.Run();

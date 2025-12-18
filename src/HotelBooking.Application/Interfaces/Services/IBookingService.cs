@@ -1,6 +1,6 @@
 ﻿using HotelBooking.Application.Models.Bookings;
 
-namespace HotelBooking.Application.Interfaces;
+namespace HotelBooking.Application.Interfaces.Services;
 
 public interface IBookingService
 {

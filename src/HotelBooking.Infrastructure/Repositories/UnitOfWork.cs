@@ -1,4 +1,4 @@
-﻿using HotelBooking.Application.Interfaces;
+﻿using HotelBooking.Application.Interfaces.Persistence;
 using HotelBooking.Infrastructure.Persistence;
 
 namespace HotelBooking.Infrastructure.Repositories;

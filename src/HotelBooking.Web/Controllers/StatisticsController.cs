@@ -1,5 +1,5 @@
 ﻿using HotelBooking.Application.Models.Statistics;
-using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

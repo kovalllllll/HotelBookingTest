@@ -1,4 +1,6 @@
-﻿using HotelBooking.Application.Interfaces;
+﻿using HotelBooking.Application.Interfaces.Common;
+using HotelBooking.Application.Interfaces.Persistence;
+using HotelBooking.Application.Interfaces.Services;
 using HotelBooking.Application.Services;
 using HotelBooking.Infrastructure.Context;
 using HotelBooking.Infrastructure.Identity;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace HotelBooking.Infrastructure;
 
@@ -44,5 +47,18 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
 
         return services;
+    }
+
+    public static async Task InitializeDatabaseAsync(this IServiceProvider services)
+    {
+        try
+        {
+            await SeedData.InitializeAsync(services);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
+            logger.LogError(ex, "An error occurred while initializing the database.");
+        }
     }
 }

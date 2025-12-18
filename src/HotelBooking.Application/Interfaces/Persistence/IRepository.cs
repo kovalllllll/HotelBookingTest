@@ -1,6 +1,6 @@
 ﻿using HotelBooking.Domain.Common;
 
-namespace HotelBooking.Application.Interfaces;
+namespace HotelBooking.Application.Interfaces.Persistence;
 
 public interface IRepository<T> where T : BaseEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace HotelBooking.Application.Interfaces;
+﻿namespace HotelBooking.Application.Interfaces.Common;
 
 public interface IUserContext
 {

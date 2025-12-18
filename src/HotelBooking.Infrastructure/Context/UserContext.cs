@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace HotelBooking.Infrastructure.Context;

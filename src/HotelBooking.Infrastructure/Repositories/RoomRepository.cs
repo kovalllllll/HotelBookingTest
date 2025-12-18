@@ -1,5 +1,5 @@
 ﻿using HotelBooking.Application.Models.Rooms;
-using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.Persistence;
 using HotelBooking.Domain.Entities;
 using HotelBooking.Domain.Enums;
 using HotelBooking.Infrastructure.Persistence;
