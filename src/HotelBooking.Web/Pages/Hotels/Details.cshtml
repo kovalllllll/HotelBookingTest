@@ -1,0 +1,163 @@
+﻿@page "/Hotels/{id:int}"
+@model HotelBooking.Web.Pages.Hotels.DetailsModel
+@{
+    ViewData["Title"] = Model.Hotel?.Name ?? "Готель";
+}
+
+@if (Model.Hotel == null)
+{
+    <div class="max-w-2xl mx-auto text-center py-12">
+        <div class="text-6xl mb-4">😕</div>
+        <h1 class="text-2xl font-bold text-gray-800">Готель не знайдено</h1>
+        <a href="/" class="text-blue-600 hover:underline mt-4 inline-block">← Повернутися до списку</a>
+    </div>
+}
+else
+{
+    <div class="max-w-6xl mx-auto">
+        <!-- Hotel Header -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <img src="@(Model.Hotel.ImageUrl ?? "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200")"
+                 alt="@Model.Hotel.Name" class="w-full h-64 object-cover">
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">@Model.Hotel.Name</h1>
+                        <p class="text-gray-600">📍 @Model.Hotel.City, @Model.Hotel.Address</p>
+                    </div>
+                    <div class="flex text-yellow-400 text-2xl mt-2 md:mt-0">
+                        @for (int i = 0; i < Model.Hotel.StarRating; i++)
+                        {
+                            <span>⭐</span>
+                        }
+                    </div>
+                </div>
+                <p class="text-gray-600">@Model.Hotel.Description</p>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded">
+                <p class="text-green-700">✅ @Model.SuccessMessage</p>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+                <p class="text-red-700">❌ @Model.ErrorMessage</p>
+            </div>
+        }
+
+        <!-- Rooms Section -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">🛏️ Доступні номери</h2>
+
+        @if (!Model.Rooms.Any())
+        {
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                <p class="text-yellow-700">На жаль, зараз немає доступних номерів.</p>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                @foreach (var room in Model.Rooms)
+                {
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">Номер @room.RoomNumber</h3>
+                                <span
+                                    class="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mt-1">
+                                    @room.RoomTypeName
+                                </span>
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    class="text-2xl font-bold text-green-600">@room.PricePerNight.ToString("N0") ₴</span>
+                                <span class="text-gray-500 text-sm block">/ніч</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-3">@room.Description</p>
+                        <div class="flex items-center gap-4 text-gray-500 text-sm mb-4">
+                            <span>👥 До @room.Capacity гостей</span>
+                            @if (room.IsAvailable)
+                            {
+                                <span class="text-green-600">✓ Доступний</span>
+                            }
+                            else
+                            {
+                                <span class="text-red-600">✗ Зайнятий</span>
+                            }
+                        </div>
+
+                        @if (User.Identity?.IsAuthenticated == true && room.IsAvailable)
+                        {
+                            <div x-data="{ showForm: false }" class="mt-4">
+                                <button @@click="showForm = !showForm"
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                                    <span x-show="!showForm">Забронювати</span>
+                                    <span x-show="showForm">Приховати форму</span>
+                                </button>
+
+                                <form method="post" x-show="showForm" x-transition class="mt-4 space-y-3 border-t pt-4">
+                                    <input type="hidden" name="roomId" value="@room.Id"/>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата
+                                                заїзду</label>
+                                            <input type="date" name="checkIn" required
+                                                   min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата
+                                                виїзду</label>
+                                            <input type="date" name="checkOut" required
+                                                   min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Кількість
+                                            гостей</label>
+                                        <select name="guests"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                            @for (var i = 1; i <= room.Capacity; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Особливі
+                                            побажання</label>
+                                        <textarea name="specialRequests" rows="2"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                  placeholder="Наприклад: пізній заїзд, дитяче ліжечко..."></textarea>
+                                    </div>
+                                    <button type="submit"
+                                            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                                        ✓ Підтвердити бронювання
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else if (!User.Identity?.IsAuthenticated == true)
+                        {
+                            <a href="/Login"
+                               class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-200">
+                                Увійдіть, щоб забронювати
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="mt-8">
+            <a href="/" class="text-blue-600 hover:underline">← Повернутися до списку готелів</a>
+        </div>
+    </div>
+}

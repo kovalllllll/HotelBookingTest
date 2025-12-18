@@ -1,0 +1,69 @@
+﻿@page
+@model HotelBooking.Web.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<div class="max-w-md mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">📝 Реєстрація</h1>
+        
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4 rounded">
+                <p class="text-red-700">@Model.ErrorMessage</p>
+            </div>
+        }
+
+        <form method="post" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ім'я</label>
+                    <input type="text" asp-for="Input.FirstName" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <span asp-validation-for="Input.FirstName" class="text-red-500 text-sm"></span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Прізвище</label>
+                    <input type="text" asp-for="Input.LastName" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <span asp-validation-for="Input.LastName" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" asp-for="Input.Email" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="your@email.com">
+                <span asp-validation-for="Input.Email" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Телефон (необов'язково)</label>
+                <input type="tel" asp-for="Input.PhoneNumber"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="+380...">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                <input type="password" asp-for="Input.Password" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="Мінімум 6 символів">
+                <span asp-validation-for="Input.Password" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Підтвердіть пароль</label>
+                <input type="password" asp-for="Input.ConfirmPassword" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <span asp-validation-for="Input.ConfirmPassword" class="text-red-500 text-sm"></span>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+                Зареєструватися
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-gray-600">Вже маєте акаунт? <a href="/Login" class="text-blue-600 hover:underline font-medium">Увійти</a></p>
+        </div>
+    </div>
+</div>
+

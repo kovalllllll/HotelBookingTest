@@ -1,0 +1,192 @@
+﻿@page
+@model HotelBooking.Web.Pages.AdminModel
+@{
+    ViewData["Title"] = "Адмін панель";
+}
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📊 Адмін панель</h1>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <span class="text-2xl">📋</span>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Всього бронювань</p>
+                    <p class="text-2xl font-bold text-gray-800">@Model.Statistics.TotalBookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <span class="text-2xl">✅</span>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Підтверджених</p>
+                    <p class="text-2xl font-bold text-green-600">@Model.Statistics.ConfirmedBookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-red-100 rounded-full">
+                    <span class="text-2xl">❌</span>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Скасованих</p>
+                    <p class="text-2xl font-bold text-red-600">@Model.Statistics.CancelledBookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <span class="text-2xl">💰</span>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Загальний дохід</p>
+                    <p class="text-2xl font-bold text-yellow-600">@Model.Statistics.TotalRevenue.ToString("N0") ₴</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Monthly Chart -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">📈 Бронювання по місяцях</h2>
+            <canvas id="monthlyChart" height="200"></canvas>
+        </div>
+
+        <!-- Hotels Chart -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">🏨 Дохід по готелях</h2>
+            <canvas id="hotelsChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- All Bookings Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold text-gray-800">📋 Всі бронювання</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Готель
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Номер
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дати</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Сума</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дії</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                @foreach (var booking in Model.Bookings)
+                {
+                    var statusColor = booking.Status switch
+                    {
+                        HotelBooking.Domain.Enums.BookingStatus.Pending => "bg-yellow-100 text-yellow-800",
+                        HotelBooking.Domain.Enums.BookingStatus.Confirmed => "bg-green-100 text-green-800",
+                        HotelBooking.Domain.Enums.BookingStatus.CheckedIn => "bg-blue-100 text-blue-800",
+                        HotelBooking.Domain.Enums.BookingStatus.CheckedOut => "bg-gray-100 text-gray-800",
+                        HotelBooking.Domain.Enums.BookingStatus.Cancelled => "bg-red-100 text-red-800",
+                        _ => "bg-gray-100 text-gray-800"
+                    };
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#@booking.Id</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@booking.HotelName</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@booking.RoomNumber</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            @booking.CheckInDate.ToString("dd.MM") - @booking.CheckOutDate.ToString("dd.MM.yyyy")
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">@booking.TotalPrice.ToString("N0") ₴</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                                class="px-2 py-1 text-xs font-medium rounded-full @statusColor">@booking.StatusName</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            @if (booking.Status == HotelBooking.Domain.Enums.BookingStatus.Pending)
+                            {
+                                <form method="post" asp-page-handler="Confirm" class="inline">
+                                    <input type="hidden" name="bookingId" value="@booking.Id"/>
+                                    <button type="submit" class="text-green-600 hover:text-green-800 mr-2">✓
+                                        Підтвердити
+                                    </button>
+                                </form>
+                            }
+                            @if (booking.Status != HotelBooking.Domain.Enums.BookingStatus.Cancelled &&
+                                 booking.Status != HotelBooking.Domain.Enums.BookingStatus.CheckedOut)
+                            {
+                                <form method="post" asp-page-handler="Cancel" class="inline">
+                                    <input type="hidden" name="bookingId" value="@booking.Id"/>
+                                    <button type="submit" class="text-red-600 hover:text-red-800">✗ Скасувати</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Monthly bookings chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Statistics.MonthlyStats.Select(x => x.MonthName))),
+                datasets: [{
+                    label: 'Бронювань',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Statistics.MonthlyStats.Select(x => x.BookingsCount))),
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgb(59, 130, 246)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Hotels revenue chart
+        const hotelsCtx = document.getElementById('hotelsChart').getContext('2d');
+        new Chart(hotelsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Statistics.HotelStats.Select(x => x.HotelName))),
+                datasets: [{
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Statistics.HotelStats.Select(x => x.Revenue))),
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(16, 185, 129, 0.7)',
+                        'rgba(245, 158, 11, 0.7)',
+                        'rgba(239, 68, 68, 0.7)',
+                        'rgba(139, 92, 246, 0.7)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+}
