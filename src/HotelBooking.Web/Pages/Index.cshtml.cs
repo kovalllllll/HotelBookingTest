@@ -1,4 +1,4 @@
-﻿﻿using HotelBooking.Application.Models;
+﻿using HotelBooking.Application.Models.Hotels;
 using HotelBooking.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

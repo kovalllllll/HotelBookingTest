@@ -1,4 +1,4 @@
-﻿﻿using HotelBooking.Application.Models;
+﻿using HotelBooking.Application.Models.Bookings;
 using HotelBooking.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

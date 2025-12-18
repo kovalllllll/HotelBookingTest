@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using Dapper;
-using HotelBooking.Application.Models;
+using HotelBooking.Application.Models.Statistics;
 using HotelBooking.Application.Interfaces;
 using HotelBooking.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

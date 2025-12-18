@@ -1,4 +1,4 @@
-﻿using HotelBooking.Application.Models;
+﻿using HotelBooking.Application.Models.Bookings;
 
 namespace HotelBooking.Application.Interfaces;
 

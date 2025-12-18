@@ -1,6 +1,6 @@
 ﻿using HotelBooking.Domain.Enums;
 
-namespace HotelBooking.Application.Models;
+namespace HotelBooking.Application.Models.Bookings;
 
 public class BookingModel
 {
@@ -18,19 +18,5 @@ public class BookingModel
     public string UserId { get; set; } = string.Empty;
     public string UserEmail { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-}
-
-public class CreateBookingModel
-{
-    public DateTime CheckInDate { get; set; }
-    public DateTime CheckOutDate { get; set; }
-    public string? SpecialRequests { get; set; }
-    public int NumberOfGuests { get; set; }
-    public int RoomId { get; set; }
-}
-
-public class UpdateBookingStatusModel
-{
-    public BookingStatus Status { get; set; }
 }
 
