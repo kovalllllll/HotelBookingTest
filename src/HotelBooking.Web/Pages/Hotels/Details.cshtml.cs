@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using HotelBooking.Application.DTOs;
+﻿using HotelBooking.Application.DTOs;
 using HotelBooking.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,7 +8,8 @@ namespace HotelBooking.Web.Pages.Hotels;
 public class DetailsModel(
     IHotelService hotelService,
     IRoomService roomService,
-    IBookingService bookingService)
+    IBookingService bookingService,
+    IUserContext userContext)
     : PageModel
 {
     public HotelDto? Hotel { get; set; }
@@ -31,7 +31,7 @@ public class DetailsModel(
 
     public async Task<IActionResult> OnPostAsync(int id, int roomId, DateTime checkIn, DateTime checkOut, int guests, string? specialRequests)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (string.IsNullOrEmpty(userId))
         {
             return RedirectToPage("/Login");

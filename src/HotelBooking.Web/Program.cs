@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllers();
 
 builder.Services.AddRazorPages();
@@ -39,7 +41,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapRazorPages();
 
-// Ініціалізація бази даних
 try
 {
     await SeedData.InitializeAsync(app.Services);

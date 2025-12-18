@@ -7,7 +7,7 @@ namespace HotelBooking.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class HotelsController(IHotelService hotelService) : ControllerBase
+public class HotelsController(IHotelService hotelService, IRoomService roomService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<HotelDto>>> GetAll()
@@ -23,6 +23,17 @@ public class HotelsController(IHotelService hotelService) : ControllerBase
         if (hotel == null)
             return NotFound();
         return Ok(hotel);
+    }
+
+    [HttpGet("{id:int}/rooms")]
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms(int id)
+    {
+        var hotel = await hotelService.GetHotelByIdAsync(id);
+        if (hotel == null)
+            return NotFound();
+        
+        var rooms = await roomService.GetRoomsByHotelAsync(id);
+        return Ok(rooms);
     }
 
     [HttpGet("search")]

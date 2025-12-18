@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using HotelBooking.Application.DTOs;
+﻿using HotelBooking.Application.DTOs;
 using HotelBooking.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ namespace HotelBooking.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class BookingsController(IBookingService bookingService) : ControllerBase
+public class BookingsController(IBookingService bookingService, IUserContext userContext) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = "Administrator")]
@@ -26,8 +25,8 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         if (booking == null)
             return NotFound();
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (booking.UserId != userId && !User.IsInRole("Administrator"))
+        var userId = userContext.UserId;
+        if (booking.UserId != userId && !userContext.IsInRole("Administrator"))
             return Forbid();
 
         return Ok(booking);
@@ -36,7 +35,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     [HttpGet("my")]
     public async Task<ActionResult<IEnumerable<BookingDto>>> GetMyBookings()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
@@ -47,7 +46,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BookingDto>> Create([FromBody] CreateBookingDto dto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
@@ -72,16 +71,16 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return Ok(booking);
     }
 
-    [HttpPost("{id:int}/cancel")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Cancel(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
         try
         {
-            if (User.IsInRole("Administrator"))
+            if (userContext.IsInRole("Administrator"))
             {
                 var booking = await bookingService.GetBookingByIdAsync(id);
                 if (booking == null)

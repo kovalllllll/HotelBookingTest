@@ -99,14 +99,14 @@ public class AuthController(
         });
     }
 
-    [HttpPost("logout")]
+    [HttpDelete("session")]
     public async Task<IActionResult> Logout()
     {
         await signInManager.SignOutAsync();
-        return Ok(new { message = "Logged out successfully" });
+        return NoContent();
     }
 
-    [HttpGet("me")]
+    [HttpGet("current")]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         if (User.Identity?.IsAuthenticated != true)

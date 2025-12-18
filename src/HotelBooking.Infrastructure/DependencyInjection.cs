@@ -1,8 +1,9 @@
-﻿using HotelBooking.Application.Interfaces;
+﻿﻿using HotelBooking.Application.Interfaces;
 using HotelBooking.Application.Services;
 using HotelBooking.Infrastructure.Identity;
 using HotelBooking.Infrastructure.Persistence;
 using HotelBooking.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +40,8 @@ public static class DependencyInjection
         services.AddScoped<IHotelService, HotelService>();
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IBookingService, BookingService>();
+        
+        services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }

@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using HotelBooking.Application.DTOs;
+﻿using HotelBooking.Application.DTOs;
 using HotelBooking.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,25 +7,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace HotelBooking.Web.Pages;
 
 [Authorize]
-public class BookingsModel(IBookingService bookingService) : PageModel
+public class BookingsModel(IBookingService bookingService, IUserContext userContext) : PageModel
 {
     public IEnumerable<BookingDto> Bookings { get; set; } = [];
 
     public async Task OnGetAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (!string.IsNullOrEmpty(userId))
         {
             Bookings = await bookingService.GetUserBookingsAsync(userId);
         }
     }
 
-    [TempData]
-    public string? ErrorMessage { get; set; }
+    [TempData] public string? ErrorMessage { get; set; }
 
     public async Task<IActionResult> OnPostCancelAsync(int bookingId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = userContext.UserId;
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized();
@@ -53,4 +51,3 @@ public class BookingsModel(IBookingService bookingService) : PageModel
         return RedirectToPage();
     }
 }
-

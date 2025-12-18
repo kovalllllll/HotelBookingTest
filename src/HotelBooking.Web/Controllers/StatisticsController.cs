@@ -19,4 +19,3 @@ public class StatisticsController(IStatisticsRepository statisticsRepository) : 
         return Ok(statistics);
     }
 }
-
